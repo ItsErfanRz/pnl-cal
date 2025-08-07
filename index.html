@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="fa">
+<head>
+  <meta charset="UTF-8">
+  <title>ماشین حساب سود/ضرر ترید</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f1f1f1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 30px;
+    }
+
+    .container {
+      background: white;
+      padding: 25px;
+      border-radius: 15px;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+      max-width: 400px;
+      width: 100%;
+    }
+
+    h2 {
+      text-align: center;
+      color: #333;
+    }
+
+    label {
+      display: block;
+      margin-top: 15px;
+      font-weight: bold;
+      color: #444;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      box-sizing: border-box;
+    }
+
+    button {
+      margin-top: 20px;
+      width: 100%;
+      padding: 12px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+
+    #result {
+      margin-top: 20px;
+      font-size: 18px;
+      text-align: center;
+      font-weight: bold;
+      color: #222;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h2>ماشین حساب سود/ضرر</h2>
+    <form id="calcForm">
+      <label>نقطه ورود (Entry Price):</label>
+      <input type="number" step="any" id="entry" required>
+
+      <label>قیمت فعلی (Current Price):</label>
+      <input type="number" step="any" id="current" required>
+
+      <label>مارجین ($):</label>
+      <input type="number" step="any" id="margin" required>
+
+      <label>لورج:</label>
+      <input type="number" step="any" id="leverage" required>
+
+      <label>نوع پوزیشن:</label>
+      <select id="positionType">
+        <option value="long">لانگ</option>
+        <option value="short">شورت</option>
+      </select>
+
+      <button type="submit">محاسبه</button>
+    </form>
+
+    <div id="result"></div>
+  </div>
+
+  <script>
+    document.getElementById("calcForm").addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      const entry = parseFloat(document.getElementById("entry").value);
+      const current = parseFloat(document.getElementById("current").value);
+      const margin = parseFloat(document.getElementById("margin").value);
+      const leverage = parseFloat(document.getElementById("leverage").value);
+      const positionType = document.getElementById("positionType").value;
+
+      const positionSize = margin * leverage;
+
+      let pnl = 0;
+      if (positionType === "long") {
+        pnl = (current - entry) * positionSize / entry;
+      } else {
+        pnl = (entry - current) * positionSize / entry;
+      }
+
+      const pnlPercent = (pnl / margin) * 100;
+
+      const resultText = `سود/ضرر: ${pnl.toFixed(2)} دلار (${pnlPercent.toFixed(2)}٪)`;
+      document.getElementById("result").innerText = resultText;
+    });
+  </script>
+
+</body>
+</html>
